@@ -13,3 +13,7 @@ attachments
 .DS_Store
 .node_modules.lock
 .project_id
+.grok/skills
+.grok/references
+.grok/status
+turntoday-source.zip
