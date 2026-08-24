@@ -32,7 +32,7 @@ export type HouseState = {
   overrides: Override[];
   meals: Meal[];
   absences: Absence[];
-  completeOnboarding: (a: string, b: string) => void;
+  completeOnboarding: (names: string[]) => void;
   applyServerHouse: (house: ServerHouse) => void;
   applyPayload: (payload: BoardPayload) => void;
   setRevision: (revision: number) => void;
@@ -57,6 +57,7 @@ export type HouseState = {
 
 const SAMPLE_A = "현규";
 const SAMPLE_B = "민서";
+export const MAX_MEMBERS = 8;
 
 export function sampleHouse(): Pick<
   HouseState,
@@ -139,15 +140,15 @@ export const useHouseStore = create<HouseState>()(
   persist(
     (set, get) => ({
       ...sampleHouse(),
-      completeOnboarding: (nameA, nameB) => {
-        const a = nameA.trim() || SAMPLE_A;
-        const b = nameB.trim() || SAMPLE_B;
+      completeOnboarding: (names) => {
+        const cleaned = names.map((n) => n.trim()).filter(Boolean);
+        if (cleaned.length === 0) cleaned.push(SAMPLE_A);
+        if (cleaned.length === 1) cleaned.push(SAMPLE_B);
         const current = get().members;
-        const members = [
-          { id: current[0]?.id ?? uid(), name: a },
-          { id: current[1]?.id ?? uid(), name: b },
-          ...current.slice(2),
-        ];
+        const members = cleaned.slice(0, MAX_MEMBERS).map((name, i) => ({
+          id: current[i]?.id ?? uid(),
+          name,
+        }));
         const seeded = sampleHouse();
         set({
           onboarded: true,
@@ -194,7 +195,7 @@ export const useHouseStore = create<HouseState>()(
         }),
       addMember: (name) => {
         const n = name.trim();
-        if (!n || get().members.length >= 4) return;
+        if (!n || get().members.length >= MAX_MEMBERS) return;
         set({ members: [...get().members, { id: uid(), name: n }] });
       },
       removeMember: (id) => {

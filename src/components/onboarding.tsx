@@ -4,7 +4,7 @@ import { AuthFrame } from "@/components/auth-frame";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createHouse, joinHouse, peekInvite } from "@/lib/house-api";
-import { boardPayload, useHouseStore } from "@/lib/house-store";
+import { boardPayload, MAX_MEMBERS, useHouseStore } from "@/lib/house-store";
 import { cn, inviteFromSearch } from "@/lib/utils";
 import type { InvitePreview } from "@/lib/house-types";
 
@@ -12,8 +12,10 @@ export function Onboarding() {
   const members = useHouseStore((s) => s.members);
   const completeOnboarding = useHouseStore((s) => s.completeOnboarding);
   const applyServerHouse = useHouseStore((s) => s.applyServerHouse);
-  const [a, setA] = useState(members[0]?.name ?? "현규");
-  const [b, setB] = useState(members[1]?.name ?? "민서");
+  const [names, setNames] = useState<string[]>([
+    members[0]?.name ?? "현규",
+    members[1]?.name ?? "민서",
+  ]);
   const [code, setCode] = useState("");
   const [preview, setPreview] = useState<InvitePreview | null>(null);
   const [seatId, setSeatId] = useState("");
@@ -38,10 +40,14 @@ export function Onboarding() {
       });
   }, [code]);
 
+  function setNameAt(index: number, value: string) {
+    setNames((prev) => prev.map((n, i) => (i === index ? value : n)));
+  }
+
   return (
     <AuthFrame
       title="오늘차례"
-      blurb="새 집을 열거나, 초대 링크로 빈 자리에 앉습니다. 같은 보드가 두 기기에 저장됩니다."
+      blurb="새 집을 열거나, 초대 링크로 빈 자리에 앉습니다. 같은 보드가 여러 기기에 저장됩니다."
     >
       {preview ? (
         <form
@@ -105,7 +111,7 @@ export function Onboarding() {
             e.preventDefault();
             setBusy(true);
             setError("");
-            completeOnboarding(a, b);
+            completeOnboarding(names);
             try {
               const local = useHouseStore.getState();
               const house = await createHouse({
@@ -122,23 +128,53 @@ export function Onboarding() {
           <label className="block">
             <span className="mb-1.5 block text-xs font-medium text-muted">나</span>
             <Input
-              value={a}
-              onChange={(e) => setA(e.target.value)}
+              value={names[0] ?? ""}
+              onChange={(e) => setNameAt(0, e.target.value)}
               maxLength={12}
               autoComplete="name"
             />
           </label>
-          <label className="block">
-            <span className="mb-1.5 block text-xs font-medium text-muted">
-              같이 사는 사람
-            </span>
-            <Input
-              value={b}
-              onChange={(e) => setB(e.target.value)}
-              maxLength={12}
-            />
-          </label>
-          <Button type="submit" size="lg" className="mt-4 w-full" disabled={busy}>
+          <div>
+            <p className="mb-1.5 text-xs font-medium text-muted">같이 사는 사람</p>
+            <ul className="space-y-2">
+              {names.slice(1).map((name, i) => {
+                const index = i + 1;
+                return (
+                  <li key={index} className="flex gap-2">
+                    <Input
+                      value={name}
+                      onChange={(e) => setNameAt(index, e.target.value)}
+                      maxLength={12}
+                      placeholder="이름"
+                      aria-label={`같이 사는 사람 ${index}`}
+                    />
+                    {names.length > 2 ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() =>
+                          setNames((prev) => prev.filter((_, j) => j !== index))
+                        }
+                      >
+                        빼기
+                      </Button>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+            {names.length < MAX_MEMBERS ? (
+              <Button
+                type="button"
+                variant="secondary"
+                className="mt-3 w-full"
+                onClick={() => setNames((prev) => [...prev, ""])}
+              >
+                사람 추가
+              </Button>
+            ) : null}
+          </div>
+          <Button type="submit" size="lg" className="mt-2 w-full" disabled={busy}>
             {busy ? "만드는 중" : "새 집 열기"}
           </Button>
         </form>
