@@ -44,7 +44,7 @@ export function LoginScreen() {
     try {
       if (mode === "forgot") {
         setNotice(
-          "이메일로 재설정 링크를 보내지 못합니다. 로그인할 수 있으면 설정에서 바꾸고, 구글·X 계정은 해당 버튼으로 들어오세요.",
+          "이메일로 재설정 링크를 보내지 못합니다. 로그인할 수 있으면 설정에서 바꾸고, 구글 계정은 Google 버튼으로 들어오세요.",
         );
         setBusy(false);
         return;
@@ -74,19 +74,21 @@ export function LoginScreen() {
 
   return (
     <AuthFrame
-      title="오늘차례"
+      title={mode === "signup" ? "집 열기" : mode === "forgot" ? "비밀번호" : "들어오기"}
       blurb={
         mode === "signup"
           ? "이메일로 가입하면 집이 생기고, 상대는 초대 링크로 들어옵니다."
           : mode === "forgot"
-            ? "비밀번호를 모르면 다른 로그인 방법을 쓰거나, 들어온 뒤 설정에서 바꿉니다."
-            : "이메일로 로그인하거나, 구글·X로 바로 들어옵니다."
+            ? "비밀번호를 모르면 구글로 들어오거나, 들어온 뒤 설정에서 바꿉니다."
+            : "이메일로 로그인하거나, 구글로 바로 들어옵니다."
       }
     >
-      <form className="space-y-3" onSubmit={onSubmit}>
+      <form className="space-y-4" onSubmit={onSubmit}>
         {mode === "signup" ? (
           <label className="block">
-            <span className="mb-1.5 block text-xs font-medium text-muted">이름</span>
+            <span className="mb-1.5 block text-xs font-medium tracking-wide text-muted">
+              이름
+            </span>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -97,7 +99,9 @@ export function LoginScreen() {
           </label>
         ) : null}
         <label className="block">
-          <span className="mb-1.5 block text-xs font-medium text-muted">이메일</span>
+          <span className="mb-1.5 block text-xs font-medium tracking-wide text-muted">
+            이메일
+          </span>
           <Input
             type="email"
             value={email}
@@ -109,7 +113,9 @@ export function LoginScreen() {
         </label>
         {mode !== "forgot" ? (
           <label className="block">
-            <span className="mb-1.5 block text-xs font-medium text-muted">비밀번호</span>
+            <span className="mb-1.5 block text-xs font-medium tracking-wide text-muted">
+              비밀번호
+            </span>
             <Input
               type="password"
               value={password}
@@ -134,11 +140,11 @@ export function LoginScreen() {
         </Button>
       </form>
 
-      <div className="mt-4 flex flex-col gap-2 text-sm text-muted">
+      <div className="mt-5 flex flex-col gap-3 text-sm text-muted">
         {mode === "signin" ? (
           <button
             type="button"
-            className="text-left underline-offset-4 hover:underline"
+            className="min-h-11 text-left underline-offset-4 hover:underline"
             onClick={() => {
               setMode("forgot");
               setError("");
@@ -150,7 +156,7 @@ export function LoginScreen() {
         ) : null}
         <button
           type="button"
-          className="text-left underline-offset-4 hover:underline"
+          className="min-h-11 text-left underline-offset-4 hover:underline"
           onClick={() => {
             setMode(mode === "signup" ? "signin" : "signup");
             setError("");
@@ -161,25 +167,27 @@ export function LoginScreen() {
         </button>
       </div>
 
-      <div className="mt-8 space-y-3">
-        <p className="text-center text-xs font-medium tracking-wide text-muted">또는</p>
-        {authEnabled ? (
-          GROK_PROVIDERS.map((p) => (
-            <Button
-              key={p.providerId}
-              type="button"
-              size="lg"
-              className="w-full"
-              variant="secondary"
-              onClick={() => signIn(p.providerId, { callbackURL: afterAuthPath() })}
-            >
-              {p.label}로 계속
-            </Button>
-          ))
-        ) : (
-          <p className="text-sm text-muted">로그인이 꺼져 있습니다.</p>
-        )}
-      </div>
+      {mode !== "forgot" ? (
+        <div className="mt-8 space-y-3">
+          <p className="text-center text-xs font-medium tracking-wide text-muted">또는</p>
+          {authEnabled ? (
+            GROK_PROVIDERS.map((p) => (
+              <Button
+                key={p.providerId}
+                type="button"
+                size="lg"
+                className="w-full"
+                variant="secondary"
+                onClick={() => signIn(p.providerId, { callbackURL: afterAuthPath() })}
+              >
+                {p.label}로 계속
+              </Button>
+            ))
+          ) : (
+            <p className="text-sm text-muted">로그인이 꺼져 있습니다.</p>
+          )}
+        </div>
+      ) : null}
     </AuthFrame>
   );
 }

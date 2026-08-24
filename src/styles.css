@@ -27,8 +27,11 @@
   --radius-xl: 24px;
   --radius: 12px;
 
+  --motion-stagger: 40ms;
+  --motion-micro: 80ms;
   --motion-quick: 150ms;
   --motion-fast: 250ms;
+  --motion-slow: 400ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -86,6 +89,21 @@
   .pad-safe-x {
     padding-left: max(1rem, env(safe-area-inset-left));
     padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .rise-in {
+    animation: rise-in var(--motion-slow) var(--ease-out) both;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

@@ -87,7 +87,7 @@ export function TodayBoard() {
         onSave={setMeal}
       />
 
-      <ul className="mt-5 space-y-2">
+      <ul className="mt-4 space-y-2">
         {rows.map((row) => (
           <ChoreRow
             key={row.chore.id}
@@ -103,10 +103,10 @@ export function TodayBoard() {
 
       <Link
         to="/shop"
-        className="mt-5 flex min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 lg:hidden"
+        className="mt-5 flex min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-colors duration-[var(--motion-quick)] hover:bg-secondary lg:hidden"
       >
         <span className="text-sm font-medium">장보기</span>
-        <span className="text-sm text-muted">
+        <span className="text-sm tabular-nums text-muted">
           {openShop === 0 ? "비었음" : `${openShop}개 남음`}
         </span>
       </Link>
@@ -115,24 +115,24 @@ export function TodayBoard() {
         <aside className="space-y-6">
           <Link
             to="/shop"
-            className="hidden min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 lg:flex"
+            className="hidden min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-colors duration-[var(--motion-quick)] hover:bg-secondary lg:flex"
           >
             <span className="text-sm font-medium">장보기</span>
-            <span className="text-sm text-muted">
+            <span className="text-sm tabular-nums text-muted">
               {openShop === 0 ? "비었음" : `${openShop}개 남음`}
             </span>
           </Link>
-      <section className="lg:mt-0 mt-8">
+      <section className="rounded-xl border border-border bg-card p-4 lg:mt-0 mt-2">
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="text-xs font-medium tracking-wide text-muted">이번 주</h2>
-          <Link to="/roster" className="text-xs font-medium text-muted">
+          <Link to="/roster" className="text-xs font-medium text-muted hover:text-foreground">
             당번표
           </Link>
         </div>
-        <ul className="mt-3 space-y-3">
+        <ul className="mt-4 space-y-4">
           {weekCounts.map((m) => (
             <li key={m.id}>
-              <div className="mb-1 flex items-baseline justify-between text-sm">
+              <div className="mb-1.5 flex items-baseline justify-between text-sm">
                 <span className={cn(m.id === meId && "font-medium")}>
                   {m.name}
                   {m.id === meId ? " · 나" : ""}
@@ -141,7 +141,7 @@ export function TodayBoard() {
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
                 <div
-                  className="h-full rounded-full bg-accent transition-[width] duration-[var(--motion-fast)]"
+                  className="h-full rounded-full bg-accent transition-[width] duration-[var(--motion-fast)] ease-[var(--ease-out)]"
                   style={{ width: `${(m.count / maxCount) * 100}%` }}
                 />
               </div>
@@ -168,9 +168,9 @@ function MealCard({
   const [value, setValue] = useState(dish);
 
   return (
-    <section className="rounded-xl border border-border bg-card p-4">
+    <section className="rounded-xl border border-border bg-card p-4 sm:p-5">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="text-xs font-medium text-muted">오늘 저녁</p>
+        <p className="text-xs font-medium tracking-wide text-muted">오늘 저녁</p>
         <p className="text-xs text-muted">{cookName} 차림</p>
       </div>
       {editing ? (
@@ -195,7 +195,7 @@ function MealCard({
       ) : (
         <button
           type="button"
-          className="mt-2 w-full text-left text-xl font-semibold tracking-tight"
+          className="mt-2 w-full text-left font-display text-2xl font-semibold tracking-tight"
           onClick={() => {
             setValue(dish);
             setEditing(true);
@@ -227,7 +227,8 @@ function ChoreRow({
     <li
       className={cn(
         "flex items-center gap-3 rounded-xl border border-border bg-card p-2 pl-3",
-        done && "opacity-55",
+        mine && !done && "bg-secondary/40",
+        done && "opacity-50",
       )}
     >
       <button
@@ -236,7 +237,7 @@ function ChoreRow({
         aria-pressed={done}
         aria-label={`${chore.title} ${done ? "취소" : "완료"}`}
         className={cn(
-          "flex size-11 shrink-0 items-center justify-center rounded-lg border border-border",
+          "flex size-11 shrink-0 items-center justify-center rounded-md border border-border transition-colors duration-[var(--motion-quick)]",
           done && "border-accent bg-accent text-accent-foreground",
         )}
       >
@@ -246,13 +247,22 @@ function ChoreRow({
         <p className={cn("text-sm font-medium", done && "line-through")}>
           {chore.title}
         </p>
-        <p className="text-xs text-muted">
+        <p className="mt-0.5 text-xs text-muted">
           {name}
           {mine ? " · 나" : ""}
           {" · "}
           {chore.cadence === "daily" ? "매일 교대" : "이번 주"}
         </p>
       </div>
+      <span
+        className={cn(
+          "hidden size-8 shrink-0 items-center justify-center rounded-md bg-secondary text-xs font-medium sm:flex",
+          mine && "bg-accent text-accent-foreground",
+        )}
+        aria-hidden
+      >
+        {name.slice(0, 1)}
+      </span>
       <Button
         type="button"
         variant="ghost"

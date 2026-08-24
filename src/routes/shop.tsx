@@ -113,7 +113,7 @@ function ShopRow({
       >
         <span
           className={cn(
-            "flex size-11 items-center justify-center rounded-md border border-border",
+            "flex size-11 items-center justify-center rounded-lg border border-border",
             done && "border-accent bg-accent text-accent-foreground",
           )}
         >

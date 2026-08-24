@@ -359,7 +359,7 @@ function SettingsInner() {
           <section>
             <h2 className="text-xs font-medium tracking-wide text-muted">비밀번호</h2>
             <p className="mt-1 text-sm text-muted">
-              이메일로 가입한 계정만 바꿀 수 있습니다. 구글·X는 그쪽에서 바꿉니다.
+              이메일로 가입한 계정만 바꿀 수 있습니다. 구글 계정은 그쪽에서 바꿉니다.
             </p>
             <form
               className="mt-3 space-y-2"
