@@ -1,11 +1,13 @@
-import { Check, RotateCw } from "lucide-react";
+import { Check } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { PickMember } from "@/components/pick-member";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   assigneeId,
+  presentMembers,
   useHouseStore,
   type Chore,
 } from "@/lib/house-store";
@@ -30,8 +32,9 @@ export function TodayBoard() {
   const shopping = useHouseStore((s) => s.shopping);
   const meals = useHouseStore((s) => s.meals);
   const toggleDone = useHouseStore((s) => s.toggleDone);
-  const passToday = useHouseStore((s) => s.passToday);
+  const assignOnDate = useHouseStore((s) => s.assignOnDate);
   const setMeal = useHouseStore((s) => s.setMeal);
+  const [pickChore, setPickChore] = useState<Chore | null>(null);
 
   const meal = meals.find((m) => m.date === today)?.dish ?? "";
   const cookChore = chores.find((c) => c.active && c.title === "저녁 차리기");
@@ -96,7 +99,11 @@ export function TodayBoard() {
             mine={row.memberId === meId}
             done={row.done}
             onToggle={() => toggleDone(row.chore.id)}
-            onPass={() => passToday(row.chore.id)}
+            onPick={() => {
+              const pool = presentMembers(members, absences, today);
+              if (pool.length < 2) return;
+              setPickChore(row.chore);
+            }}
           />
         ))}
       </ul>
@@ -151,6 +158,15 @@ export function TodayBoard() {
       </section>
         </aside>
       </div>
+      {pickChore ? (
+        <PickMember
+          title={pickChore.title}
+          members={presentMembers(members, absences, today)}
+          selectedId={assigneeId(pickChore, members, today, overrides, absences)}
+          onPick={(id) => assignOnDate(pickChore.id, today, id)}
+          onClose={() => setPickChore(null)}
+        />
+      ) : null}
     </AppShell>
   );
 }
@@ -214,14 +230,14 @@ function ChoreRow({
   mine,
   done,
   onToggle,
-  onPass,
+  onPick,
 }: {
   chore: Chore;
   name: string;
   mine: boolean;
   done: boolean;
   onToggle: () => void;
-  onPass: () => void;
+  onPick: () => void;
 }) {
   return (
     <li
@@ -243,6 +259,12 @@ function ChoreRow({
       >
         {done ? <Check className="size-5" strokeWidth={2.4} /> : null}
       </button>
+      <button
+        type="button"
+        onClick={onPick}
+        className="flex min-w-0 flex-1 items-center gap-3 text-left"
+        aria-label={`${chore.title} 담당 고르기`}
+      >
       <div className="min-w-0 flex-1">
         <p className={cn("text-sm font-medium", done && "line-through")}>
           {chore.title}
@@ -263,16 +285,7 @@ function ChoreRow({
       >
         {name.slice(0, 1)}
       </span>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label="다른 사람에게 넘기기"
-        onClick={onPass}
-        className="shrink-0 text-muted"
-      >
-        <RotateCw className="size-4" />
-      </Button>
+      </button>
     </li>
   );
 }

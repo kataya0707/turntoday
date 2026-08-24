@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { addDaysIso, todayIsoKst, uid } from "@/lib/utils";
-import { assigneeId, cycleOverrides } from "@/lib/assign";
+import { assigneeId, assignOverrides, cycleOverrides, presentMembers } from "@/lib/assign";
 import type {
   Absence,
   BoardPayload,
@@ -16,7 +16,7 @@ import type {
 } from "@/lib/house-types";
 
 export type { Absence, Cadence, Chore, Completion, Meal, Member, Override, ShopItem };
-export { assigneeId, cycleOverrides };
+export { assigneeId, assignOverrides, cycleOverrides, presentMembers };
 
 export type HouseState = {
   onboarded: boolean;
@@ -46,6 +46,7 @@ export type HouseState = {
   toggleDone: (choreId: string) => void;
   passToday: (choreId: string) => void;
   passOnDate: (choreId: string, date: string) => void;
+  assignOnDate: (choreId: string, date: string, memberId: string) => void;
   setMeal: (dish: string) => void;
   addShop: (name: string) => void;
   toggleShop: (id: string) => void;
@@ -264,6 +265,13 @@ export const useHouseStore = create<HouseState>()(
         if (!chore) return;
         set({
           overrides: cycleOverrides(chore, members, date, overrides, absences),
+        });
+      },
+      assignOnDate: (choreId, date, memberId) => {
+        const chore = get().chores.find((c) => c.id === choreId);
+        if (!chore || !memberId) return;
+        set({
+          overrides: assignOverrides(chore, date, memberId, get().overrides),
         });
       },
       setMeal: (dish) => {

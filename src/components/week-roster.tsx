@@ -1,7 +1,12 @@
-import { RotateCw } from "lucide-react";
+import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
-import { Button } from "@/components/ui/button";
-import { assigneeId, useHouseStore, type Chore } from "@/lib/house-store";
+import { PickMember } from "@/components/pick-member";
+import {
+  assigneeId,
+  presentMembers,
+  useHouseStore,
+  type Chore,
+} from "@/lib/house-store";
 import {
   cn,
   dayNum,
@@ -11,6 +16,8 @@ import {
   weekdayShortKo,
 } from "@/lib/utils";
 
+type PickTarget = { chore: Chore; date: string; currentId: string };
+
 export function WeekRoster() {
   const members = useHouseStore((s) => s.members);
   const meId = useHouseStore((s) => s.meId);
@@ -18,7 +25,8 @@ export function WeekRoster() {
   const overrides = useHouseStore((s) => s.overrides);
   const absences = useHouseStore((s) => s.absences);
   const completions = useHouseStore((s) => s.completions);
-  const passOnDate = useHouseStore((s) => s.passOnDate);
+  const assignOnDate = useHouseStore((s) => s.assignOnDate);
+  const [pick, setPick] = useState<PickTarget | null>(null);
 
   const today = todayIsoKst();
   const week = weekDates(today);
@@ -38,6 +46,13 @@ export function WeekRoster() {
   ).length;
   const mineCount = mineCells + mineWeekly;
 
+  function openPick(chore: Chore, date: string) {
+    const currentId = assigneeId(chore, members, date, overrides, absences);
+    const pool = presentMembers(members, absences, date);
+    if (pool.length < 2) return;
+    setPick({ chore, date, currentId });
+  }
+
   return (
     <AppShell
       wide
@@ -49,8 +64,8 @@ export function WeekRoster() {
       }
     >
       <p className="mb-6 max-w-xl text-sm leading-relaxed text-muted">
-        이름을 누르면 다음 사람으로 넘어갑니다. 테두리는 오늘이고, 주간 일은
-        일주일 전체가 바뀝니다.
+        이름을 누르면 담당을 고릅니다. 테두리는 오늘이고, 주간 일은 일주일
+        전체가 바뀝니다.
       </p>
 
       {daily.length > 0 ? (
@@ -112,8 +127,8 @@ export function WeekRoster() {
                           mine={mine}
                           isToday={date === today}
                           done={done}
-                          label={`${chore.title} ${weekdayShortKo(date)} ${member?.name ?? ""} 넘기기`}
-                          onPass={() => passOnDate(chore.id, date)}
+                          label={`${chore.title} ${weekdayShortKo(date)} 담당 고르기`}
+                          onPick={() => openPick(chore, date)}
                         />
                       );
                     })}
@@ -131,31 +146,45 @@ export function WeekRoster() {
             이번 주 담당
           </h2>
           <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-            {weekly.map((chore) => (
-              <WeeklyRow
-                key={chore.id}
-                chore={chore}
-                name={
-                  members.find(
-                    (m) =>
-                      m.id === assigneeId(chore, members, today, overrides, absences),
-                  )?.name ?? "—"
-                }
-                mine={assigneeId(chore, members, today, overrides, absences) === meId}
-                doneCount={
-                  completions.filter(
-                    (c) => c.choreId === chore.id && week.includes(c.date),
-                  ).length
-                }
-                onPass={() => passOnDate(chore.id, today)}
-              />
-            ))}
+            {weekly.map((chore) => {
+              const memberId = assigneeId(
+                chore,
+                members,
+                today,
+                overrides,
+                absences,
+              );
+              return (
+                <WeeklyRow
+                  key={chore.id}
+                  chore={chore}
+                  name={members.find((m) => m.id === memberId)?.name ?? "—"}
+                  mine={memberId === meId}
+                  doneCount={
+                    completions.filter(
+                      (c) => c.choreId === chore.id && week.includes(c.date),
+                    ).length
+                  }
+                  onPick={() => openPick(chore, today)}
+                />
+              );
+            })}
           </ul>
         </section>
       ) : null}
 
       {active.length === 0 ? (
         <p className="text-sm text-muted">설정에서 집안일을 켜 주세요.</p>
+      ) : null}
+
+      {pick ? (
+        <PickMember
+          title={pick.chore.title}
+          members={presentMembers(members, absences, pick.date)}
+          selectedId={pick.currentId}
+          onPick={(id) => assignOnDate(pick.chore.id, pick.date, id)}
+          onClose={() => setPick(null)}
+        />
       ) : null}
     </AppShell>
   );
@@ -167,19 +196,19 @@ function DayCell({
   isToday,
   done,
   label,
-  onPass,
+  onPick,
 }: {
   name: string;
   mine: boolean;
   isToday: boolean;
   done: boolean;
   label: string;
-  onPass: () => void;
+  onPick: () => void;
 }) {
   return (
     <button
       type="button"
-      onClick={onPass}
+      onClick={onPick}
       aria-label={label}
       className={cn(
         "flex min-h-11 items-center justify-center rounded-lg px-0.5 transition-[background-color,opacity,border-color] duration-[var(--motion-quick)] ease-[var(--ease-out)]",
@@ -200,34 +229,30 @@ function WeeklyRow({
   name,
   mine,
   doneCount,
-  onPass,
+  onPick,
 }: {
   chore: Chore;
   name: string;
   mine: boolean;
   doneCount: number;
-  onPass: () => void;
+  onPick: () => void;
 }) {
   return (
-    <li className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3.5">
-      <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium">{chore.title}</p>
-        <p className="text-xs text-muted">
-          {name}
-          {mine ? " · 나" : ""}
-          {doneCount > 0 ? ` · 완료 ${doneCount}` : ""}
-        </p>
-      </div>
-      <Button
+    <li>
+      <button
         type="button"
-        variant="ghost"
-        size="icon"
-        aria-label={`${chore.title} 다른 사람에게 넘기기`}
-        onClick={onPass}
-        className="shrink-0 text-muted"
+        onClick={onPick}
+        className="flex min-h-12 w-full items-center gap-3 rounded-xl border border-border bg-card px-4 py-3.5 text-left"
       >
-        <RotateCw className="size-4" />
-      </Button>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium">{chore.title}</p>
+          <p className="text-xs text-muted">
+            {name}
+            {mine ? " · 나" : ""}
+            {doneCount > 0 ? ` · 완료 ${doneCount}` : ""}
+          </p>
+        </div>
+      </button>
     </li>
   );
 }

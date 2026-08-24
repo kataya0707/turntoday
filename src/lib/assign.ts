@@ -35,6 +35,20 @@ export function assigneeId(
   return pool[((idx % n) + n) % n].id;
 }
 
+export function assignOverrides(
+  chore: Chore,
+  date: string,
+  memberId: string,
+  overrides: Override[],
+): Override[] {
+  const dates = chore.cadence === "weekly" ? weekDates(date) : [date];
+  const dateSet = new Set(dates);
+  return [
+    ...overrides.filter((o) => !(o.choreId === chore.id && dateSet.has(o.date))),
+    ...dates.map((d) => ({ choreId: chore.id, date: d, memberId })),
+  ];
+}
+
 export function cycleOverrides(
   chore: Chore,
   members: Member[],
@@ -44,13 +58,8 @@ export function cycleOverrides(
 ): Override[] {
   const pool = presentMembers(members, absences, date);
   if (pool.length < 2) return overrides;
-  const dates = chore.cadence === "weekly" ? weekDates(date) : [date];
   const current = assigneeId(chore, members, date, overrides, absences);
   const idx = pool.findIndex((m) => m.id === current);
   const next = pool[(idx + 1) % pool.length];
-  const dateSet = new Set(dates);
-  return [
-    ...overrides.filter((o) => !(o.choreId === chore.id && dateSet.has(o.date))),
-    ...dates.map((d) => ({ choreId: chore.id, date: d, memberId: next.id })),
-  ];
+  return assignOverrides(chore, date, next.id, overrides);
 }
