@@ -19,9 +19,9 @@ export function AuthFrame({
   blurb: string;
 }) {
   return (
-    <div className="min-h-dvh bg-bg lg:grid lg:grid-cols-2">
-      <section className="relative hidden overflow-hidden border-r border-border bg-card lg:flex lg:flex-col">
-        <div className="relative min-h-64 flex-1">
+    <div className="min-h-dvh bg-bg md:grid md:grid-cols-2">
+      <section className="relative hidden overflow-hidden border-r border-border bg-card md:flex md:flex-col">
+        <div className="relative min-h-48 max-h-[42dvh] flex-1 lg:max-h-none">
           <img
             src="/brand-hero.jpg"
             alt=""
@@ -67,7 +67,7 @@ export function AuthFrame({
       </section>
       <section className="flex min-h-dvh items-center justify-center px-4 py-12 sm:px-8">
         <div className="rise-in w-full max-w-md">
-          <div className="mb-6 flex items-center gap-3 lg:hidden">
+          <div className="mb-6 flex items-center gap-3 md:hidden">
             <BrandMark />
             <p className="text-sm font-medium tracking-wide">
               {kicker ?? "오늘차례"}
@@ -76,7 +76,7 @@ export function AuthFrame({
           <img
             src="/brand-hero.jpg"
             alt="오늘차례"
-            className="mb-8 aspect-video w-full rounded-xl object-cover lg:hidden"
+            className="mb-8 aspect-video w-full rounded-xl object-cover md:hidden"
           />
           <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             {title}

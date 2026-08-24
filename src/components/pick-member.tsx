@@ -17,7 +17,7 @@ export function PickMember({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-bg/70 pb-20 sm:items-center sm:pb-0 md:pb-0"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-bg/70 p-3 pb-20 sm:items-center sm:p-6 sm:pb-6"
       role="presentation"
       onClick={onClose}
     >
@@ -25,7 +25,7 @@ export function PickMember({
         role="dialog"
         aria-modal="true"
         aria-labelledby="pick-member-title"
-        className="w-full max-w-md rounded-t-xl border border-border bg-card p-5 sm:rounded-xl"
+        className="max-h-[min(32rem,calc(100dvh-6rem))] w-full max-w-md overflow-y-auto rounded-t-xl border border-border bg-card p-5 sm:rounded-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <h2

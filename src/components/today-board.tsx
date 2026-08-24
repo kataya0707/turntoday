@@ -82,7 +82,7 @@ export function TodayBoard() {
             : "오늘은 다른 사람 차례"
       }
     >
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-12">
+      <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_18rem] xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-12">
         <div>
       <MealCard
         dish={meal}
@@ -110,7 +110,7 @@ export function TodayBoard() {
 
       <Link
         to="/shop"
-        className="mt-5 flex min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-colors duration-[var(--motion-quick)] hover:bg-secondary lg:hidden"
+        className="mt-5 flex min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-colors duration-[var(--motion-quick)] hover:bg-secondary md:hidden"
       >
         <span className="text-sm font-medium">장보기</span>
         <span className="text-sm tabular-nums text-muted">
@@ -122,14 +122,14 @@ export function TodayBoard() {
         <aside className="space-y-6">
           <Link
             to="/shop"
-            className="hidden min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-colors duration-[var(--motion-quick)] hover:bg-secondary lg:flex"
+            className="hidden min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-colors duration-[var(--motion-quick)] hover:bg-secondary md:flex"
           >
             <span className="text-sm font-medium">장보기</span>
             <span className="text-sm tabular-nums text-muted">
               {openShop === 0 ? "비었음" : `${openShop}개 남음`}
             </span>
           </Link>
-      <section className="rounded-xl border border-border bg-card p-4 lg:mt-0 mt-2">
+      <section className="mt-2 rounded-xl border border-border bg-card p-4 md:mt-0">
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="text-xs font-medium tracking-wide text-muted">이번 주</h2>
           <Link to="/roster" className="text-xs font-medium text-muted hover:text-foreground">

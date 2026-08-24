@@ -11,7 +11,7 @@ import { authClient, signOut } from "@/lib/auth/client";
 import { deleteAccount, joinHouse, leaveHouse, peekInvite, setMyMember } from "@/lib/house-api";
 import { notifyEnabled, requestNotify, setNotifyEnabled } from "@/lib/notify";
 import { useHouseStore, type Cadence } from "@/lib/house-store";
-import { cn, formatKoreanDate, todayIsoKst } from "@/lib/utils";
+import { cn, formatKoreanDate, objectParticle, todayIsoKst } from "@/lib/utils";
 
 export const Route = createFileRoute("/settings")({ component: SettingsPage });
 
@@ -93,7 +93,7 @@ function SettingsInner() {
 
   return (
     <AppShell kicker="같은 링크면 같은 집입니다" title="설정">
-      <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
+      <div className="grid gap-10 md:grid-cols-2 md:gap-12">
         <div className="space-y-10">
           <section>
             <h2 className="text-xs font-medium tracking-wide text-muted">초대</h2>
@@ -162,7 +162,7 @@ function SettingsInner() {
                     key={m.id}
                     className="space-y-2 rounded-xl border border-border bg-card p-2"
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex min-w-0 items-center gap-2">
                       <button
                         type="button"
                         onClick={() => {
@@ -187,14 +187,15 @@ function SettingsInner() {
                         value={m.name}
                         onChange={(e) => renameMember(m.id, e.target.value)}
                         aria-label={`${m.name} 이름`}
+                        className="min-w-0 flex-1"
                       />
                       {members.length > 1 ? (
                         <ConfirmDialog
-                          title={`${m.name}을 뺄까요?`}
+                          title={`${m.name}${objectParticle(m.name)} 뺄까요?`}
                           description="당번에서 빠지고, 연결된 계정이 있으면 그 사람은 자리를 잃습니다."
                           confirmLabel="빼기"
                           trigger={
-                            <Button type="button" variant="outline" size="sm">
+                            <Button type="button" variant="outline" size="sm" className="shrink-0">
                               빼기
                             </Button>
                           }

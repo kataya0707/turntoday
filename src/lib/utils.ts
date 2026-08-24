@@ -100,3 +100,11 @@ export function inviteFromSearch(search?: string) {
   return code.length >= 4 && code.length <= 12 ? code : "";
 }
 
+export function objectParticle(name: string) {
+  const ch = name.trim().slice(-1);
+  if (!ch) return "를";
+  const code = ch.charCodeAt(0);
+  if (code < 0xac00 || code > 0xd7a3) return "를";
+  return (code - 0xac00) % 28 === 0 ? "를" : "을";
+}
+

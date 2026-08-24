@@ -28,8 +28,8 @@ export function ConfirmDialog({
         <span className="inline-flex">{trigger}</span>
       </AlertDialog.Trigger>
       <AlertDialog.Portal>
-        <AlertDialog.Overlay className="fixed inset-0 z-50 bg-bg/80" />
-        <AlertDialog.Content className="fixed inset-x-4 top-1/2 z-50 mx-auto w-full max-w-md -translate-y-1/2 rounded-xl border border-border bg-card p-5 sm:inset-x-auto">
+        <AlertDialog.Overlay className="fixed inset-0 z-50 bg-bg/70" />
+        <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 w-[min(calc(100%-2rem),28rem)] max-h-[min(32rem,calc(100dvh-2rem))] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border border-border bg-card p-5">
           <AlertDialog.Title className="font-display text-lg font-semibold tracking-tight">
             {title}
           </AlertDialog.Title>
