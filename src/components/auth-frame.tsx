@@ -20,50 +20,64 @@ export function AuthFrame({
 }) {
   return (
     <div className="min-h-dvh bg-bg lg:grid lg:grid-cols-2">
-      <section className="relative hidden flex-col justify-between overflow-hidden border-r border-border bg-card px-12 py-12 lg:flex xl:px-16">
-        <div className="flex items-center gap-3">
-          <BrandMark />
-          <p className="text-sm font-medium tracking-wide">오늘차례</p>
+      <section className="relative hidden overflow-hidden border-r border-border bg-card lg:flex lg:flex-col">
+        <div className="relative min-h-64 flex-1">
+          <img
+            src="/brand-hero.jpg"
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
         </div>
-        <div>
-          <h2 className="font-display text-4xl font-semibold leading-[1.15] tracking-tight xl:text-5xl">
-            오늘 집 일은
-            <br />
-            누구 차례인지
-          </h2>
-          <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
-            당번, 장보기, 공평 기록. 두 폰이 같은 보드를 봅니다.
-          </p>
-          <ul className="mt-10 max-w-sm space-y-2">
-            {PREVIEW.map((row) => (
-              <li
-                key={row.title}
-                className="flex items-center justify-between rounded-xl border border-border bg-bg/50 px-4 py-3"
-              >
-                <span
-                  className={
-                    row.done
-                      ? "text-sm text-muted line-through"
-                      : "text-sm font-medium"
-                  }
+        <div className="flex flex-col justify-between px-12 py-10 xl:px-16">
+          <div className="flex items-center gap-3">
+            <BrandMark />
+            <p className="text-sm font-medium tracking-wide">오늘차례</p>
+          </div>
+          <div className="mt-8">
+            <h2 className="font-display text-4xl font-semibold leading-[1.15] tracking-tight xl:text-5xl">
+              오늘 집 일은
+              <br />
+              누구 차례인지
+            </h2>
+            <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
+              당번, 장보기, 공평 기록. 두 폰이 같은 보드를 봅니다.
+            </p>
+            <ul className="mt-8 max-w-sm space-y-2">
+              {PREVIEW.map((row) => (
+                <li
+                  key={row.title}
+                  className="flex items-center justify-between rounded-xl border border-border bg-bg/50 px-4 py-3"
                 >
-                  {row.title}
-                </span>
-                <span className="text-xs text-muted">{row.who}</span>
-              </li>
-            ))}
-          </ul>
+                  <span
+                    className={
+                      row.done
+                        ? "text-sm text-muted line-through"
+                        : "text-sm font-medium"
+                    }
+                  >
+                    {row.title}
+                  </span>
+                  <span className="text-xs text-muted">{row.who}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="mt-8 text-sm text-muted">웹에서 열고, 홈 화면에 두면 앱입니다.</p>
         </div>
-        <p className="text-sm text-muted">웹에서 열고, 홈 화면에 두면 앱입니다.</p>
       </section>
       <section className="flex min-h-dvh items-center justify-center px-4 py-12 sm:px-8">
         <div className="rise-in w-full max-w-md">
-          <div className="mb-8 flex items-center gap-3 lg:hidden">
+          <div className="mb-6 flex items-center gap-3 lg:hidden">
             <BrandMark />
             <p className="text-sm font-medium tracking-wide">
               {kicker ?? "오늘차례"}
             </p>
           </div>
+          <img
+            src="/brand-hero.jpg"
+            alt="오늘차례"
+            className="mb-8 aspect-video w-full rounded-xl object-cover lg:hidden"
+          />
           <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             {title}
           </h1>
