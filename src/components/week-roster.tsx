@@ -211,13 +211,13 @@ function DayCell({
       onClick={onPick}
       aria-label={label}
       className={cn(
-        "flex min-h-11 items-center justify-center rounded-lg px-0.5 transition-[background-color,opacity,border-color] duration-[var(--motion-quick)] ease-[var(--ease-out)]",
+        "flex min-h-11 min-w-0 items-center justify-center overflow-hidden rounded-lg px-0.5 transition-[background-color,opacity,border-color] duration-[var(--motion-quick)] ease-[var(--ease-out)]",
         isToday ? "border border-accent" : "border border-transparent",
         mine ? "bg-secondary text-foreground" : "text-muted hover:bg-secondary/60",
         done && "opacity-55",
       )}
     >
-      <span className={cn("max-w-full truncate text-xs font-medium", mine && "text-foreground", done && "line-through")}>
+      <span className={cn("block w-full truncate whitespace-nowrap text-center text-xs font-medium", mine && "text-foreground", done && "line-through")}>
         {shortName(name)}
       </span>
     </button>
@@ -258,7 +258,5 @@ function WeeklyRow({
 }
 
 function shortName(name: string) {
-  const trimmed = name.trim();
-  if (trimmed.length <= 3) return trimmed;
-  return trimmed.slice(0, 2);
+  return name.trim().slice(0, 2);
 }

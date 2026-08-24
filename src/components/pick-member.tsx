@@ -17,7 +17,7 @@ export function PickMember({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-bg/80 sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-bg/70 pb-20 sm:items-center sm:pb-0 md:pb-0"
       role="presentation"
       onClick={onClose}
     >

@@ -154,9 +154,12 @@ export const useHouseStore = create<HouseState>()(
           onboarded: true,
           members,
           meId: members[0]?.id ?? "",
-          shopping: get().shopping.length ? get().shopping : seeded.shopping,
-          meals: get().meals.length ? get().meals : seeded.meals,
-          absences: get().absences,
+          shopping: [],
+          meals: [],
+          completions: [],
+          overrides: [],
+          absences: [],
+          chores: get().chores.length ? get().chores : seeded.chores,
         });
       },
       applyServerHouse: (house) =>

@@ -64,10 +64,14 @@ function SettingsInner() {
 
   async function copyInvite() {
     if (!inviteUrl) return;
-    await navigator.clipboard.writeText(inviteUrl);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1500);
-    toast.success("초대 링크를 복사했습니다");
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+      toast.success("초대 링크를 복사했습니다");
+    } catch {
+      toast.error("복사할 수 없습니다. 위 코드를 직접 보내 주세요.");
+    }
   }
 
   async function shareInvite() {
