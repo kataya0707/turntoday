@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { AuthFrame } from "@/components/auth-frame";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,17 @@ function afterAuthPath() {
   return invite ? `/?invite=${encodeURIComponent(invite)}` : "/";
 }
 
+/** Grok broker Google only works on grok.me / sandbox — not vercel.app. */
+function brokerSocialOk() {
+  if (typeof window === "undefined") return false;
+  const h = window.location.hostname;
+  return (
+    h === "localhost" ||
+    h.endsWith(".grok.me") ||
+    h.endsWith(".grok-sandbox.com")
+  );
+}
+
 export function LoginScreen() {
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [name, setName] = useState("");
@@ -34,6 +45,11 @@ export function LoginScreen() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [social, setSocial] = useState(false);
+
+  useEffect(() => {
+    setSocial(brokerSocialOk());
+  }, []);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -44,7 +60,9 @@ export function LoginScreen() {
     try {
       if (mode === "forgot") {
         setNotice(
-          "이메일로 재설정 링크를 보내지 못합니다. 로그인할 수 있으면 설정에서 바꾸고, 구글 계정은 Google 버튼으로 들어오세요.",
+          social
+            ? "이메일로 재설정 링크를 보내지 못합니다. 로그인할 수 있으면 설정에서 바꾸고, 구글 계정은 Google 버튼으로 들어오세요."
+            : "이메일로 재설정 링크를 보내지 못합니다. 로그인할 수 있으면 설정에서 바꾸세요.",
         );
         setBusy(false);
         return;
@@ -79,8 +97,10 @@ export function LoginScreen() {
         mode === "signup"
           ? "이메일로 가입하면 집이 생기고, 상대는 초대 링크로 들어옵니다."
           : mode === "forgot"
-            ? "비밀번호를 모르면 구글로 들어오거나, 들어온 뒤 설정에서 바꿉니다."
-            : "이메일로 로그인하거나, 구글로 바로 들어옵니다."
+            ? "로그인할 수 있으면 설정에서 비밀번호를 바꿉니다."
+            : social
+              ? "이메일로 로그인하거나, 구글로 바로 들어옵니다."
+              : "이메일과 비밀번호로 들어옵니다."
       }
     >
       <form className="space-y-4" onSubmit={onSubmit}>
@@ -167,25 +187,21 @@ export function LoginScreen() {
         </button>
       </div>
 
-      {mode !== "forgot" ? (
+      {mode !== "forgot" && social && authEnabled ? (
         <div className="mt-8 space-y-3">
           <p className="text-center text-xs font-medium tracking-wide text-muted">또는</p>
-          {authEnabled ? (
-            GROK_PROVIDERS.map((p) => (
-              <Button
-                key={p.providerId}
-                type="button"
-                size="lg"
-                className="w-full"
-                variant="secondary"
-                onClick={() => signIn(p.providerId, { callbackURL: afterAuthPath() })}
-              >
-                {p.label}로 계속
-              </Button>
-            ))
-          ) : (
-            <p className="text-sm text-muted">로그인이 꺼져 있습니다.</p>
-          )}
+          {GROK_PROVIDERS.map((p) => (
+            <Button
+              key={p.providerId}
+              type="button"
+              size="lg"
+              className="w-full"
+              variant="secondary"
+              onClick={() => signIn(p.providerId, { callbackURL: afterAuthPath() })}
+            >
+              {p.label}로 계속
+            </Button>
+          ))}
         </div>
       ) : null}
     </AuthFrame>

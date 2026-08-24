@@ -7,7 +7,7 @@ export function HouseGate({ children }: { children: ReactNode }) {
   const { user, isPending } = useCurrentUserState();
   if (isPending) {
     return (
-      <AuthFrame title="오늘차례" blurb="이메일로 로그인하거나, 구글로 바로 들어옵니다.">
+      <AuthFrame title="오늘차례" blurb="이메일과 비밀번호로 들어옵니다.">
         <div className="space-y-3">
           <div className="h-11 rounded-lg bg-secondary" />
           <div className="h-11 rounded-lg bg-secondary" />
