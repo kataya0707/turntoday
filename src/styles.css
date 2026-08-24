@@ -27,9 +27,6 @@
   --radius-xl: 24px;
   --radius: 12px;
 
-  --breakpoint-md: 36rem;
-  --breakpoint-lg: 64rem;
-
   --motion-stagger: 40ms;
   --motion-micro: 80ms;
   --motion-quick: 150ms;

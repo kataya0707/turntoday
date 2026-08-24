@@ -82,8 +82,9 @@ export function TodayBoard() {
             : "오늘은 다른 사람 차례"
       }
     >
-      <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_18rem] xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-12">
-        <div>
+      <div className="@container">
+      <div className="grid gap-8 @[42rem]:grid-cols-[minmax(0,1fr)_18rem] @[56rem]:grid-cols-[minmax(0,1fr)_22rem] @[56rem]:gap-12">
+        <div className="min-w-0">
       <MealCard
         dish={meal}
         cookName={cook?.name ?? "—"}
@@ -110,7 +111,7 @@ export function TodayBoard() {
 
       <Link
         to="/shop"
-        className="mt-5 flex min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-colors duration-[var(--motion-quick)] hover:bg-secondary md:hidden"
+        className="mt-5 flex min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-colors duration-[var(--motion-quick)] hover:bg-secondary @[42rem]:hidden"
       >
         <span className="text-sm font-medium">장보기</span>
         <span className="text-sm tabular-nums text-muted">
@@ -119,17 +120,17 @@ export function TodayBoard() {
       </Link>
         </div>
 
-        <aside className="space-y-6">
+        <aside className="hidden min-w-0 space-y-6 @[42rem]:block">
           <Link
             to="/shop"
-            className="hidden min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-colors duration-[var(--motion-quick)] hover:bg-secondary md:flex"
+            className="flex min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-colors duration-[var(--motion-quick)] hover:bg-secondary"
           >
             <span className="text-sm font-medium">장보기</span>
             <span className="text-sm tabular-nums text-muted">
               {openShop === 0 ? "비었음" : `${openShop}개 남음`}
             </span>
           </Link>
-      <section className="mt-2 rounded-xl border border-border bg-card p-4 md:mt-0">
+      <section className="rounded-xl border border-border bg-card p-4">
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="text-xs font-medium tracking-wide text-muted">이번 주</h2>
           <Link to="/roster" className="text-xs font-medium text-muted hover:text-foreground">
@@ -158,6 +159,7 @@ export function TodayBoard() {
       </section>
         </aside>
       </div>
+      </div>
       {pickChore ? (
         <PickMember
           title={pickChore.title}
@@ -184,10 +186,10 @@ function MealCard({
   const [value, setValue] = useState(dish);
 
   return (
-    <section className="rounded-xl border border-border bg-card p-4 sm:p-5">
-      <div className="flex items-baseline justify-between gap-3">
-        <p className="text-xs font-medium tracking-wide text-muted">오늘 저녁</p>
-        <p className="text-xs text-muted">{cookName} 차림</p>
+    <section className="min-w-0 rounded-xl border border-border bg-card p-4 sm:p-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <p className="text-xs font-medium tracking-wide break-keep text-muted">오늘 저녁</p>
+        <p className="text-xs break-keep text-muted">{cookName} 차림</p>
       </div>
       {editing ? (
         <form
@@ -211,7 +213,7 @@ function MealCard({
       ) : (
         <button
           type="button"
-          className="mt-2 w-full text-left font-display text-2xl font-semibold tracking-tight"
+          className="mt-2 w-full text-left font-display text-2xl font-semibold tracking-tight break-keep"
           onClick={() => {
             setValue(dish);
             setEditing(true);
@@ -242,7 +244,7 @@ function ChoreRow({
   return (
     <li
       className={cn(
-        "flex items-center gap-3 rounded-xl border border-border bg-card p-2 pl-3",
+        "flex min-w-0 items-center gap-3 rounded-xl border border-border bg-card p-2 pl-3",
         mine && !done && "bg-secondary/40",
         done && "opacity-50",
       )}
@@ -266,10 +268,10 @@ function ChoreRow({
         aria-label={`${chore.title} 담당 고르기`}
       >
       <div className="min-w-0 flex-1">
-        <p className={cn("text-sm font-medium", done && "line-through")}>
+        <p className={cn("break-keep text-sm font-medium", done && "line-through")}>
           {chore.title}
         </p>
-        <p className="mt-0.5 text-xs text-muted">
+        <p className="mt-0.5 break-keep text-xs text-muted">
           {name}
           {mine ? " · 나" : ""}
           {" · "}

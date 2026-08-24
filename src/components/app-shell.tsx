@@ -28,7 +28,7 @@ export function AppShell({
   const { user, isPending } = useCurrentUserState();
   return (
     <div className="min-h-dvh bg-bg">
-      <aside className="pad-safe-top hidden w-60 flex-col border-r border-border bg-card md:fixed md:inset-y-0 md:left-0 md:z-20 md:flex">
+      <aside className="pad-safe-top hidden w-60 flex-col border-r border-border bg-card lg:fixed lg:inset-y-0 lg:left-0 lg:z-20 lg:flex">
         <div className="flex items-center gap-3 px-5 pb-8 pt-2">
           <BrandMark />
           <div>
@@ -66,10 +66,10 @@ export function AppShell({
         </div>
       </aside>
 
-      <div className="md:pl-60">
+      <div className="lg:pl-60">
         <header className="pad-safe-top pad-safe-x sticky top-0 z-20 border-b border-border/80 bg-bg/90 backdrop-blur-sm">
           <div className="mx-auto w-full max-w-5xl px-4 pb-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between gap-3 md:hidden">
+            <div className="flex items-center justify-between gap-3 lg:hidden">
               <div className="flex items-center gap-2">
                 <BrandMark />
                 <p className="text-xs font-medium tracking-wide text-muted">오늘차례</p>
@@ -83,12 +83,12 @@ export function AppShell({
               ) : null}
             </div>
             {kicker ? (
-              <div className="mt-3 flex items-baseline justify-between gap-3 md:mt-4">
+              <div className="mt-3 flex items-baseline justify-between gap-3 lg:mt-4">
                 <p className="text-sm text-muted">{kicker}</p>
                 <SyncMark />
               </div>
             ) : (
-              <div className="mt-3 flex justify-end md:mt-4">
+              <div className="mt-3 flex justify-end lg:mt-4">
                 <SyncMark />
               </div>
             )}
@@ -102,7 +102,7 @@ export function AppShell({
 
         <main
           className={cn(
-            "mx-auto w-full px-4 pb-28 pt-6 sm:px-6 md:pb-12 lg:px-8 lg:pt-8",
+            "mx-auto w-full px-4 pb-28 pt-6 sm:px-6 lg:px-8 lg:pb-12 lg:pt-8",
             wide ? "max-w-6xl" : "max-w-5xl",
           )}
         >
@@ -111,7 +111,7 @@ export function AppShell({
       </div>
 
       <nav
-        className="pad-safe-bottom pad-safe-x fixed inset-x-0 bottom-0 z-20 border-t border-border bg-card/95 pt-1.5 backdrop-blur-sm md:hidden"
+        className="pad-safe-bottom pad-safe-x fixed inset-x-0 bottom-0 z-20 border-t border-border bg-card/95 pt-1.5 backdrop-blur-sm lg:hidden"
         aria-label="주요 메뉴"
       >
         <ul className="mx-auto grid max-w-lg grid-cols-4">
