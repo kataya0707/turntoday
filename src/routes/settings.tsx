@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { authClient, signOut } from "@/lib/auth/client";
 import { deleteAccount, joinHouse, leaveHouse, peekInvite, setMyMember } from "@/lib/house-api";
 import { notifyEnabled, requestNotify, setNotifyEnabled } from "@/lib/notify";
-import { useHouseStore, MAX_MEMBERS, type Cadence } from "@/lib/house-store";
+import { useHouseStore, type Cadence } from "@/lib/house-store";
 import { cn, formatKoreanDate, todayIsoKst } from "@/lib/utils";
 
 export const Route = createFileRoute("/settings")({ component: SettingsPage });
@@ -236,8 +236,7 @@ function SettingsInner() {
                 );
               })}
             </ul>
-            {members.length < MAX_MEMBERS ? (
-              <form
+            <form
                 className="mt-3 flex gap-2"
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -254,7 +253,6 @@ function SettingsInner() {
                   추가
                 </Button>
               </form>
-            ) : null}
           </section>
         </div>
 

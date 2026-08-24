@@ -57,7 +57,6 @@ export type HouseState = {
 
 const SAMPLE_A = "현규";
 const SAMPLE_B = "민서";
-export const MAX_MEMBERS = 8;
 
 export function sampleHouse(): Pick<
   HouseState,
@@ -145,7 +144,7 @@ export const useHouseStore = create<HouseState>()(
         if (cleaned.length === 0) cleaned.push(SAMPLE_A);
         if (cleaned.length === 1) cleaned.push(SAMPLE_B);
         const current = get().members;
-        const members = cleaned.slice(0, MAX_MEMBERS).map((name, i) => ({
+        const members = cleaned.map((name, i) => ({
           id: current[i]?.id ?? uid(),
           name,
         }));
@@ -195,7 +194,7 @@ export const useHouseStore = create<HouseState>()(
         }),
       addMember: (name) => {
         const n = name.trim();
-        if (!n || get().members.length >= MAX_MEMBERS) return;
+        if (!n) return;
         set({ members: [...get().members, { id: uid(), name: n }] });
       },
       removeMember: (id) => {

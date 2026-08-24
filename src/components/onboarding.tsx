@@ -4,7 +4,7 @@ import { AuthFrame } from "@/components/auth-frame";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createHouse, joinHouse, peekInvite } from "@/lib/house-api";
-import { boardPayload, MAX_MEMBERS, useHouseStore } from "@/lib/house-store";
+import { boardPayload, useHouseStore } from "@/lib/house-store";
 import { cn, inviteFromSearch } from "@/lib/utils";
 import type { InvitePreview } from "@/lib/house-types";
 
@@ -163,8 +163,7 @@ export function Onboarding() {
                 );
               })}
             </ul>
-            {names.length < MAX_MEMBERS ? (
-              <Button
+            <Button
                 type="button"
                 variant="secondary"
                 className="mt-3 w-full"
@@ -172,7 +171,6 @@ export function Onboarding() {
               >
                 사람 추가
               </Button>
-            ) : null}
           </div>
           <Button type="submit" size="lg" className="mt-2 w-full" disabled={busy}>
             {busy ? "만드는 중" : "새 집 열기"}
