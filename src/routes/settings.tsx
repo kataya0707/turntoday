@@ -94,18 +94,18 @@ function SettingsInner() {
   return (
     <AppShell kicker="같은 링크면 같은 집입니다" title="설정">
       <div className="@container">
-      <div className="grid gap-10 @[40rem]:grid-cols-2 @[40rem]:gap-12">
+      <div className="grid items-start gap-10 @[42rem]:grid-cols-2 @[42rem]:gap-x-12 @[42rem]:gap-y-4">
         <div className="space-y-10">
           <section>
             <h2 className="text-xs font-medium tracking-wide text-muted">초대</h2>
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-sm leading-relaxed text-muted break-keep">
               링크를 열면 빈 자리를 고르고 들어옵니다. 이미 앉은 자리는 잠깁니다.
             </p>
             <div className="mt-3 flex gap-2">
               <div className="flex h-11 min-w-0 flex-1 items-center overflow-hidden rounded-lg border border-border bg-card px-3 text-sm tracking-widest">
                 {inviteCode ?? "저장 후 생깁니다"}
               </div>
-              <Button type="button" variant="secondary" disabled={!inviteCode} onClick={() => void shareInvite()}>
+              <Button type="button" variant="secondary" className="shrink-0" disabled={!inviteCode} onClick={() => void shareInvite()}>
                 {copied ? "복사됨" : "공유"}
               </Button>
             </div>
@@ -140,7 +140,7 @@ function SettingsInner() {
                 placeholder="다른 집 코드"
                 maxLength={12}
               />
-              <Button type="submit" variant="outline">
+              <Button type="submit" variant="outline" className="shrink-0">
                 옮기기
               </Button>
             </form>
@@ -149,7 +149,7 @@ function SettingsInner() {
 
           <section>
             <h2 className="text-xs font-medium tracking-wide text-muted">사람</h2>
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-sm leading-relaxed text-muted break-keep">
               이 폰에서 나는 누구인지 고르세요. 연결된 자리는 다른 사람이 쓸 수 없습니다.
             </p>
             <ul className="mt-3 space-y-2">
@@ -285,7 +285,7 @@ function SettingsInner() {
                     </span>
                   </button>
                   <ConfirmDialog
-                    title={`${c.title}을 삭제할까요?`}
+                    title={`${c.title}${objectParticle(c.title)} 삭제할까요?`}
                     description="당번표에서 사라집니다."
                     confirmLabel="삭제"
                     trigger={
@@ -337,7 +337,7 @@ function SettingsInner() {
 
           <section>
             <h2 className="text-xs font-medium tracking-wide text-muted">오늘 차례 알림</h2>
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-sm leading-relaxed text-muted break-keep">
               이 폰에서 앱을 열었을 때, 오늘 남은 일이 있으면 한 번 알려 줍니다.
             </p>
             <Button
@@ -362,7 +362,7 @@ function SettingsInner() {
 
           <section>
             <h2 className="text-xs font-medium tracking-wide text-muted">비밀번호</h2>
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-sm leading-relaxed text-muted break-keep">
               이메일로 가입한 계정만 바꿀 수 있습니다. 구글 계정은 그쪽에서 바꿉니다.
             </p>
             <form
@@ -404,7 +404,7 @@ function SettingsInner() {
                 minLength={8}
                 autoComplete="new-password"
               />
-              <Button type="submit" variant="secondary" disabled={pwBusy || newPw.length < 8}>
+              <Button type="submit" variant="secondary" className="w-full" disabled={pwBusy || newPw.length < 8}>
                 {pwBusy ? "바꾸는 중" : "비밀번호 바꾸기"}
               </Button>
             </form>
@@ -412,7 +412,7 @@ function SettingsInner() {
 
           <section className="space-y-2">
             <h2 className="text-xs font-medium tracking-wide text-muted">계정</h2>
-            <p className="text-sm leading-relaxed text-muted">
+            <p className="text-sm leading-relaxed text-muted break-keep">
               이름과 집안일 기록은 집 보드에 남습니다. 탈퇴하면 이 계정의 로그인과
               집 연결이 지워집니다. 이메일은 로그인에만 쓰고, 광고에 쓰지 않습니다.
             </p>

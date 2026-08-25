@@ -65,23 +65,20 @@ export function AuthFrame({
           <p className="mt-8 text-sm text-muted">웹에서 열고, 홈 화면에 두면 앱입니다.</p>
         </div>
       </section>
-      <section className="flex min-h-dvh items-center justify-center px-4 py-12 sm:px-8">
-        <div className="rise-in w-full max-w-md">
-          <div className="mb-6 flex items-center gap-3 lg:hidden">
+      <section className="flex min-h-dvh items-start justify-center px-4 pb-16 pt-10 sm:px-8 lg:items-center lg:py-12">
+        <div className="w-full max-w-md">
+          <div className="mb-8 flex items-center gap-3 lg:hidden">
             <BrandMark />
             <p className="text-sm font-medium tracking-wide">
               {kicker ?? "오늘차례"}
             </p>
           </div>
-          <img
-            src="/brand-hero.jpg"
-            alt="오늘차례"
-            className="mb-8 aspect-video w-full rounded-xl object-cover lg:hidden"
-          />
           <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             {title}
           </h1>
-          <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">{blurb}</p>
+          <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted break-keep">
+            {blurb}
+          </p>
           <div className="mt-8 sm:mt-10">{children}</div>
         </div>
       </section>

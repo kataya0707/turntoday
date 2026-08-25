@@ -84,7 +84,7 @@ export function AppShell({
             </div>
             {kicker ? (
               <div className="mt-3 flex items-baseline justify-between gap-3 lg:mt-4">
-                <p className="text-sm text-muted">{kicker}</p>
+                <p className="text-sm text-muted break-keep">{kicker}</p>
                 <SyncMark />
               </div>
             ) : (
@@ -102,7 +102,7 @@ export function AppShell({
 
         <main
           className={cn(
-            "mx-auto w-full px-4 pb-28 pt-6 sm:px-6 lg:px-8 lg:pb-12 lg:pt-8",
+            "mx-auto w-full px-4 pb-[calc(8rem+env(safe-area-inset-bottom,0px))] pt-6 sm:px-6 lg:px-8 lg:pb-12 lg:pt-8",
             wide ? "max-w-6xl" : "max-w-5xl",
           )}
         >
