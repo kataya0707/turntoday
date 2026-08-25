@@ -93,8 +93,7 @@ function SettingsInner() {
 
   return (
     <AppShell kicker="같은 링크면 같은 집입니다" title="설정">
-      <div className="@container">
-      <div className="grid items-start gap-10 @[42rem]:grid-cols-2 @[42rem]:gap-x-12 @[42rem]:gap-y-4">
+      <div className="mx-auto max-w-xl space-y-10 lg:mx-0 lg:grid lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-12 lg:space-y-0">
         <div className="space-y-10">
           <section>
             <h2 className="text-xs font-medium tracking-wide text-muted">초대</h2>
@@ -452,7 +451,6 @@ function SettingsInner() {
             />
           </section>
         </div>
-      </div>
       </div>
     </AppShell>
   );
