@@ -20,6 +20,7 @@ import { GROK_PROVIDERS } from "./providers";
 export const authClient = createAuthClient({
   plugins: [genericOAuthClient()],
   fetchOptions: {
+    credentials: "include",
     onRequest(ctx) {
       const token = getBearerToken();
       if (token) ctx.headers.set("Authorization", `Bearer ${token}`);
@@ -65,6 +66,11 @@ function setBearerToken(token: string | null): void {
   } catch {
     /* storage unavailable — ignore */
   }
+}
+
+/** Keep a session token when cookies are blocked (iOS / PWA). */
+export function rememberSessionToken(token: string | null | undefined) {
+  if (token) setBearerToken(token);
 }
 
 /**

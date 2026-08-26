@@ -2,22 +2,45 @@ import { useEffect, useState, type FormEvent } from "react";
 import { AuthFrame } from "@/components/auth-frame";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GROK_PROVIDERS, authClient, authEnabled, signIn } from "@/lib/auth/client";
+import {
+  GROK_PROVIDERS,
+  authClient,
+  authEnabled,
+  rememberSessionToken,
+  signIn,
+} from "@/lib/auth/client";
 import { inviteFromSearch } from "@/lib/utils";
 
 function errorMessage(err: unknown) {
   if (!err) return "다시 시도해 주세요.";
+  const rec = err as { message?: unknown; code?: unknown; status?: unknown };
+  const code = typeof rec?.code === "string" ? rec.code : "";
   const text =
     typeof err === "string"
       ? err
       : err instanceof Error
         ? err.message
-        : typeof err === "object" && err && "message" in err
-          ? String((err as { message: unknown }).message)
+        : typeof rec?.message === "string"
+          ? rec.message
           : "";
-  if (/exist|already/i.test(text)) return "이미 가입된 이메일입니다. 로그인하세요.";
-  if (/invalid|credential|password/i.test(text)) return "이메일 또는 비밀번호가 맞지 않습니다.";
-  if (/origin/i.test(text)) return "이 화면에서 다시 열어 주세요.";
+  if (/USER_ALREADY_EXISTS|already exists|exist/i.test(`${code} ${text}`)) {
+    return "이미 가입된 이메일입니다. 로그인하세요.";
+  }
+  if (/INVALID_EMAIL_OR_PASSWORD|invalid.+password|credential/i.test(`${code} ${text}`)) {
+    return "이메일 또는 비밀번호가 맞지 않습니다.";
+  }
+  if (/INVALID_EMAIL|invalid email/i.test(`${code} ${text}`)) {
+    return "이메일 형식을 확인해 주세요.";
+  }
+  if (/PASSWORD_TOO_SHORT|too short|min/i.test(`${code} ${text}`)) {
+    return "비밀번호는 8자 이상이어야 합니다.";
+  }
+  if (/origin|forbidden|csrf/i.test(`${code} ${text}`)) {
+    return "이 주소에서 다시 열어 주세요. turntoday.vercel.app 을 쓰세요.";
+  }
+  if (/fetch|network|failed|timeout|503|500/i.test(`${code} ${text}`)) {
+    return "연결이 잠깐 끊겼습니다. 다시 눌러 주세요.";
+  }
   return text || "다시 시도해 주세요.";
 }
 
@@ -35,6 +58,34 @@ function brokerSocialOk() {
     h.endsWith(".grok.me") ||
     h.endsWith(".grok-sandbox.com")
   );
+}
+
+async function emailAuth(
+  mode: "signup" | "signin",
+  email: string,
+  password: string,
+  name: string,
+) {
+  const run = () =>
+    mode === "signup"
+      ? authClient.signUp.email({ email, password, name })
+      : authClient.signIn.email({ email, password });
+
+  let result = await run();
+  if (result.error) {
+    const msg = `${result.error.code ?? ""} ${result.error.message ?? ""}`;
+    if (/fetch|network|failed|timeout|503|500/i.test(msg)) {
+      await new Promise((r) => window.setTimeout(r, 600));
+      result = await run();
+    }
+  }
+  if (result.error) throw result.error;
+  const token =
+    result.data && typeof result.data === "object" && "token" in result.data
+      ? (result.data as { token?: string }).token
+      : undefined;
+  rememberSessionToken(token);
+  await authClient.getSession().catch(() => undefined);
 }
 
 export function LoginScreen() {
@@ -60,29 +111,17 @@ export function LoginScreen() {
     try {
       if (mode === "forgot") {
         setNotice(
-          social
-            ? "이메일로 재설정 링크를 보내지 못합니다. 로그인할 수 있으면 설정에서 바꾸고, 구글 계정은 Google 버튼으로 들어오세요."
-            : "이메일로 재설정 링크를 보내지 못합니다. 로그인할 수 있으면 설정에서 바꾸세요.",
+          "이메일로 재설정 링크를 보내지 못합니다. 로그인할 수 있으면 설정에서 바꾸세요.",
         );
         setBusy(false);
         return;
       }
-      if (mode === "signup") {
-        const { error: signError } = await authClient.signUp.email({
-          email: email.trim(),
-          password,
-          name: name.trim() || email.trim().split("@")[0] || "사용자",
-          callbackURL: next,
-        });
-        if (signError) throw signError;
-      } else {
-        const { error: signError } = await authClient.signIn.email({
-          email: email.trim(),
-          password,
-          callbackURL: next,
-        });
-        if (signError) throw signError;
-      }
+      await emailAuth(
+        mode === "signup" ? "signup" : "signin",
+        email.trim(),
+        password,
+        name.trim() || email.trim().split("@")[0] || "사용자",
+      );
       window.location.assign(next);
     } catch (err) {
       setError(errorMessage(err));
@@ -158,6 +197,9 @@ export function LoginScreen() {
                 ? "안내 보기"
                 : "로그인"}
         </Button>
+        {!authEnabled ? (
+          <p className="text-sm text-muted">로그인이 꺼져 있습니다.</p>
+        ) : null}
       </form>
 
       <div className="mt-5 flex flex-col gap-3 text-sm text-muted">

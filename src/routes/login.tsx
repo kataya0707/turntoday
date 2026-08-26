@@ -5,8 +5,7 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 export const Route = createFileRoute("/login")({ component: Login });
 
 function Login() {
-  const { user, isPending } = useCurrentUserState();
+  const { user } = useCurrentUserState();
   if (user) return <Navigate to="/" />;
-  if (isPending) return <div className="min-h-dvh bg-bg" />;
   return <LoginScreen />;
 }
